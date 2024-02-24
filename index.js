@@ -32,6 +32,7 @@ client.on('messageCreate',(message)=>{
 
 client.on('ready',()=>{
     console.log([
+        
         `[LOGS] ${client.user.tag} está online!`,
         `[LOGS] Estou em ${client.guilds.cache.size} servidores.`,
         `[LOGS] Cuidando de ${client.users.cache.size} membros.`
