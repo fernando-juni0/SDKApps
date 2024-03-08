@@ -36,11 +36,18 @@ module.exports = {
             firebaseData = firebaseData.doc(props.doc)
         }
         if (props.hasOwnProperty('where')) {
-            firebaseData = firebaseData.where(props.where[0], props.where[1], props.where[2])
+            firebaseData = firebaseData.where(props.where[0],props.where[1],props.where[2])
         }
         return await firebaseData.get().then(async (res) => {
-            return res.data()
+            let data 
+            if (props.hasOwnProperty('where')) {
+                data = res.docs[0].data()
+            }else{
+                data = res.data()
+            }
+            return data
         }).catch((error) => {
+            return {error:true,err:error}
             console.error('Erro ao buscar dados do Firestore:', error);
         });
 

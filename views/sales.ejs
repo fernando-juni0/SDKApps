@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <%- include('./reusable/head.ejs') %>
+    <title></title>
+    <link rel="stylesheet" href="<%= host %>/public/css/sales.css">
+</head>
+<body>
+    <div id="body-containner">
+
+        <div id="containner">
+            <%- include('./reusable/header.ejs',{index:2}) %>
+            <main id="main-containner">
+                <div id="main-content">
+                    <div id="pagamentos-produtos-containner">
+                        <div id="pagamentos-containner">
+                            <h1 class="title-col">Pagamentos</h1>
+                            <p class="desc-col">Adicione os seus dados bancarios abaixo.</p>
+                            <div class="linha"></div>
+                            <div id="pagamentos-content">
+                                <div class="inputs-containner" id="complete-name-content">
+                                    <label class="lable-payment" for="complete-name">Nome completo</label>
+                                    <input class="full-input-payment" placeholder="Nome completo" id="complete-name" type="text">
+                                </div>
+                                <div class="inputs-containner" id="cpf-content">
+                                    <label class="lable-payment" for="cpf-input">CPF</label>
+                                    <input placeholder="EX: 000.000.000-00" minlength="14" class="full-input-payment" maxlength="14" id="cpf-input" type="text">
+                                </div>
+                                <div class="inputs-containner" id="bank-name-content">
+                                    <label class="lable-payment" for="bank-name-input">Nome do banco</label>
+                                    <input class="full-input-payment" type="text" list="bank-input-list" placeholder="Pesquise o banco..." id="bank-name-input">
+                                    <datalist id="bank-input-list"></datalist>
+                                </div>
+                                <div class="inputs-containner" id="account-number-content">
+                                    <label class="lable-payment" for="account-number">Número da conta</label>
+                                    <input class="full-input-payment" placeholder="EX: 00000000-0" maxlength="10" minlength="10" id="account-number" type="text">
+                                </div>
+                                <div id="last-input-containner">
+                                    <div class="inputs-containner" style="width: 50% !important;" id="account-number-content">
+                                        <label class="lable-payment" for="account-number">Número da conta</label>
+                                        <input class="full-input-payment"  placeholder="EX: 0000" maxlength="4" minlength="4" id="bank-agenc" type="text">
+                                    </div>
+                                    <div id="terms-check-content">
+                                        <label for="terms-check">Concorda com os termos de uso?</label>
+                                        <label id="terms-check" class="switch">
+                                            <input id="checkbox" type="checkbox">
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div id="save-button-content">
+                                    <input type="button" id="save-button" value="Salvar">
+                                </div>
+                            </div>
+                        </div>
+                        <div id="produtos-containner">
+                            <h1 class="title-col">Produtos</h1>
+                            <p class="desc-col">Clique no botao de estoque para mudar o valor.</p>
+                            <div class="linha"></div>
+                        </div>
+                    </div>
+                    <div id="cadastro-containner">
+
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    <%- include('./reusable/script.ejs') %>
+    <script src="<%= host %>/public/js/sales.js"></script>
+</body>
+</html>

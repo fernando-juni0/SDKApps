@@ -11,5 +11,7 @@ module.exports = {
     secret:process.env.CLIENTSECRET,
     clientId:process.env.CLIENTID,
     redirect:process.env.REDIRECTURL,
-    stripe:process.env.STRIPE
+    stripe:process.env.STRIPE,
+    iban:process.env.IBAN,
+    stripeAccount:process.env.STRIPEACCOUNT
 }

@@ -2,19 +2,19 @@
 <html>
 <head>
     <%- include('./reusable/head.ejs') %>
-    <title></title>
-    <link rel="stylesheet" href="../public/css/style.css">
+    <title>SDK - Inicio</title>
+    <link rel="stylesheet" href="<%= host %>/public/css/style.css">
 </head>
 <body>
     <div id="body-containner">
         <div id="containner">
             <div id="top-fixed-menu">
                 <div id="fixed-menu-logo" class="flex-center">
-                    <img src="../public/img/logo-color-1.png">
+                    <img src="<%= host %>/public/img/logo-color-1.png">
                 </div>
                 <div id="fixed-menu-buttons">
                     <a href="/support" class="buttons-fixed-menu flex-center" id="buttons-support">Contato</a>
-                    <a href="https://discord.com/oauth2/authorize?client_id=1210894508028338197&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%2Fauth%2Fcallback&scope=identify+guilds+email" class="buttons-fixed-menu flex-center" id="buttons-login">Login</a>
+                    <a href="" class="buttons-fixed-menu flex-center" id="buttons-login">Login</a>
                 </div>
             </div>
             <main>
@@ -58,7 +58,7 @@
                                         </ul>
                                     </div>
                                     <div class="plans-col-button">
-                                        <a class="button-assinar"  href="https://discord.com/oauth2/authorize?client_id=1210894508028338197&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%2Fauth%2Fcallback&scope=identify+guilds+email" >Assinar</a>
+                                        <a class="button-assinar"  href="" >Assinar</a>
                                     </div>
                                 </div>
                             </div>
@@ -84,7 +84,7 @@
                                         </ul>
                                     </div>
                                     <div class="plans-col-button">
-                                        <a class="button-assinar"  href="https://discord.com/oauth2/authorize?client_id=1210894508028338197&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%2Fauth%2Fcallback&scope=identify+guilds+email" >Assinar</a>
+                                        <a class="button-assinar"  href="" >Assinar</a>
                                     </div>
                                 </div>
                             </div>
@@ -112,7 +112,7 @@
                                         </ul>
                                     </div>
                                     <div class="plans-col-button">
-                                        <a class="button-assinar"  href="https://discord.com/oauth2/authorize?client_id=1210894508028338197&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%2Fauth%2Fcallback&scope=identify+guilds+email" >Assinar</a>
+                                        <a class="button-assinar"  href="" >Assinar</a>
                                     </div>
                                 </div>
                             </div>
@@ -142,7 +142,7 @@
                 <footer>
                     <div id="left-containner">
                         <div id="footer-logo-containner">
-                            <img id="footer-logo-img" src="../public/img/logo-text-dark.png" alt="">
+                            <img id="footer-logo-img" src="<%= host %>/public/img/logo-text-dark.png" alt="">
                         </div>
                         <div id="redes-containner">
                             <a class="redes-icon" target="_blank" href="https://discord.gg/sdkapps">
@@ -179,7 +179,7 @@
                     <script>
                         let theme = localStorage.getItem('theme')
                         if (theme == 'dark') {
-                            document.getElementById('footer-logo-img').src = '../public/img/logo-text-ligth.png'
+                            document.getElementById('footer-logo-img').src = '<%= host %>/public/img/logo-text-ligth.png'
                         }
                     </script>
                     <div id="mid-containner">
@@ -210,6 +210,6 @@
         </div>
     </div>
     <%- include('./reusable/script.ejs') %>
-    <script src="../public/js/script.js"></script>
+    <script src="<%= host %>/public/js/script.js"></script>
 </body>
 </html>

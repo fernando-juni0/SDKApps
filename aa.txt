@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Aceitar Termos de Serviço</title>
+</head>
+<body>
+  <h1>Aceitar Termos de Serviço</h1>
+  <iframe src="https://connect.stripe.com/express/oauth/authorize?client_id=YOUR_CLIENT_ID&state=ACCOUNT_ID" width="600" height="400" frameborder="0"></iframe>
+</body>
+</html>
+
+
+
+
+const logoData = fs.readFileSync('./public/img/logo-color-1.png');
+    const imagemAjustadaBuffer = await sharp(logoData).resize({ width: 1000, height: 1000, fit: 'contain' }).toBuffer();
+    const fileUpload = await stripe.files.create({
+        purpose: 'business_icon',
+        file: {
+          data: imagemAjustadaBuffer,
+          name: '1231231.png',
+          type: 'image/png',
+        },
+      });
+const account = await stripe.accounts.create(
+{
+    country: 'BR',
+    type: 'express',
+    capabilities: {
+        card_payments: {
+            requested: true,
+        },
+        transfers: {
+            requested: true,
+        },
+    },
+    individual: {
+        first_name: 'Nome',
+        last_name: 'Sobrenome',
+        email: 'exemplo@exemplo.com',
+        phone: '+5511999999999', // Número de telefone (inclua o código do país, como +55 para o Brasil)
+        dob: {
+          day: 1,
+          month: 1,
+          year: 1980,
+        },
+        address: {
+          line1: 'Endereço',
+          city: 'Cidade',
+          state: 'Estado',
+          postal_code: 'CEP',
+          country: 'BR',
+        },
+        id_number: '112.265.675-09', // Número de identificação pessoal
+        political_exposure:'none'
+    },
+    business_type: 'individual',
+    settings: {
+        branding:{
+            primary_color: '\#ffffff',
+            icon:fileUpload.id,
+        },
+    },
+    business_profile: {
+        name: 'SDK Vendedor', // Definir o nome da empresa
+        mcc: '7299',
+        url: 'https://skapps.com.br',
+    },
+})
+
+
+
+// 1. Criar um token de conta bancária ou cartão de débito
+async function criarTokenContaBancaria(detalhesContaBancaria) {
+  try {
+    const token = await stripe.tokens.create({
+      bank_account: detalhesContaBancaria,
+    });
+    return token.id;
+  } catch (error) {
+    console.error('Erro ao criar token de conta bancária:', error);
+    throw error;
+  }
+}
+
+// 2. Adicionar a conta bancária à conta Express do vendedor
+async function adicionarContaBancariaAoVendedor(idContaVendedor, tokenContaBancaria) {
+  try {
+    await stripe.accounts.createExternalAccount(idContaVendedor, {
+      external_account: tokenContaBancaria,
+    });
+    console.log('Conta bancária adicionada com sucesso à conta do vendedor');
+  } catch (error) {
+    console.error('Erro ao adicionar conta bancária ao vendedor:', error);
+    throw error;
+  }
+}
+
+// 3. Registrar o consentimento do vendedor com os termos de serviço
+async function registrarConsentimentoTermosServico(idContaVendedor) {
+  try {
+    await stripe.accounts.update(idContaVendedor, {
+      tos_acceptance: {
+        date: Math.floor(Date.now() / 1000),
+        ip: 'IP do vendedor',
+      },
+    });
+    console.log('Consentimento aos termos de serviço registrado com sucesso');
+  } catch (error) {
+    console.error('Erro ao registrar consentimento aos termos de serviço:', error);
+    throw error;
+  }
+}
+
+// Exemplo de uso
+const detalhesContaBancaria = {
+  // Detalhes da conta bancária
+};
+
+const idContaDoVendedor = 'acct_1234567890'; // ID da conta Express do vendedor
+const tokenContaBancaria = await criarTokenContaBancaria(detalhesContaBancaria);
+await adicionarContaBancariaAoVendedor(idContaDoVendedor, tokenContaBancaria);
+await registrarConsentimentoTermosServico(idContaDoVendedor);

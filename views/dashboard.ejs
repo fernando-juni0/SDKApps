@@ -3,8 +3,8 @@
 <head>
     <%- include('./reusable/head.ejs') %>
     <title>SDK - Dashboard</title>
-    <link rel="stylesheet" href="../public/css/dashboard.css">
-</head>
+    <link rel="stylesheet" href="<%= host %>/public/css/dashboard.css">
+    
 <body>
     <div  id="body-containner">
 
@@ -38,8 +38,8 @@
                 <div id="servers-containner">
                     <div id="servers-row">
                         <% servers.forEach(element => { %>
-                            <a href="/<%= element.assinante == true ? 'server' : "payment"%>/<%= element.id %>" class="server-col">
-                                <div class="server-col-status <%= element.assinante == true ? 'greenColor' : "redColor"%>"></div>
+                            <a href="/<%= element.isPaymented == true ? 'server' : "payment"%>/<%= element.id %>" class="server-col">
+                                <div class="server-col-status <%= element.isPaymented == true ? 'greenColor' : element.assinante == true ? 'attentionColor' :"redColor"%>"></div>
                                 <div class="server-col-content">
                                     <img class="server-col-pic" src="<%= element.server_pic %>">
                                     <p class="server-col-name"><%= element.name %></p>
@@ -54,6 +54,6 @@
     </div>
     
     <%- include('./reusable/script.ejs') %>
-    <script src="../public/js/dashboard.js"></script>
+    <script src="<%= host %>/public/js/dashboard.js"></script>
 </body>
 </html>

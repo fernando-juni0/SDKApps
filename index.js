@@ -3,7 +3,7 @@ const Discord = require("discord.js");
 const { Events, GatewayIntentBits } = require('discord.js');
 const db = require('./Firebase/models.js')
 
-
+const requestIp = require('request-ip');
 const express = require('express')
 const fs = require('fs');
 const bodyParser = require('body-parser');
@@ -23,7 +23,9 @@ const functions = require('./functions.js');
 const cors = require('cors');
 
 
-const stripe = require('stripe')(webConfig.stripe);
+
+
+
 //TODO------------Configs--------------
 
 require('dotenv').config()
@@ -63,8 +65,8 @@ app.use('/public', express.static(path.join(__dirname, 'public')));
 app.set('views', path.join(__dirname, '/views'))
 app.set('view engine', 'ejs');
 
-app.use(cors());
 
+app.use(cors());
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -81,6 +83,9 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage });
+
+app.set('trust proxy', true);
+app.use(requestIp.mw());
 
 
 //TODO------------Clients discord--------------
@@ -114,34 +119,30 @@ client.on("interactionCreate", async (interaction) => {
 
 //TODO------------WEB PAGE--------------
 
+app.get('/',async (req, res) => {
 
-app.get('/', (req, res) => {
-    res.render('index', { error: req.query.error ? req.query.error : '' })
+    res.render('index', {host:`${req.protocol}://${req.hostname}`, error: req.query.error ? req.query.error : '' })
 })
 
 
 app.get('/dashboard', async (req, res) => {
+    
     if (req.session.uid) {
         let user = await db.findOne({ colecao: 'users', doc: req.session.uid })
-        verifyServer(await functions.findServers(user.access_token))
-        async function verifyServer(server) {
-            if (server.error) {
-                let time = (parseFloat(server.err.response.data.retry_after) * 1000)
-                setTimeout(async () => {
-                    let newServer = await functions.findServers(user.access_token)
-                    if (newServer.error) {
-                        await verifyServer(newServer)
-                    } else {
-                        res.render('dashboard', { user: user, servers: newServer })
-                    }
-
-                }, time)
-
-            } else {
-                res.render('dashboard', { user: user, servers: server })
+        let server = await functions.reqServerByTime(user,functions.findServers)
+            
+        let servidoresEnd = []
+        for (let i = 0; i < server.length; i++){
+            let element = server[i]
+            
+            let Findserver = await db.findOne({colecao:'servers',doc:element.id})
+            if (Findserver) {
+                servidoresEnd.push(Findserver)
+            }else{
+                servidoresEnd.push(element)
             }
         }
-
+        res.render('dashboard', { host:`${req.protocol}://${req.hostname}`, user: user, servers: servidoresEnd })
 
 
     } else {
@@ -178,13 +179,11 @@ app.get('/auth/callback', async (req, res) => {
             }
         }).then((res) => { return res.data }).catch((err) => console.error(err));
         let findUser = await db.findOne({ colecao: 'users', doc: userResponse.id })
-        if (!findUser == {} || !findUser == undefined || !findUser == null) {
+        if (findUser) {
             req.session.uid = findUser.id
             res.redirect('/dashboard')
             return
         }
-
-
 
         await db.create('users', userResponse.id, {
             id: userResponse.id,
@@ -201,18 +200,6 @@ app.get('/auth/callback', async (req, res) => {
     }
 })
 
-app.get('/server/:id', async (req, res) => {
-    if (!req.params.id || !req.session.uid) {
-        res.redirect('/')
-        return
-    }
-
-    let user = await db.findOne({ colecao: 'users', doc: req.session.uid })
-    let servers = await functions.findServers(user.access_token)
-    let id = req.params.id
-    let server = servers.find(element => element.id == id)
-    res.render('painel', { user: user, server: server })
-})
 
 
 app.get('/logout', async (req, res) => {
@@ -235,59 +222,87 @@ app.get('/payment/:id', async (req, res) => {
         return
     }
     let user = await db.findOne({ colecao: 'users', doc: req.session.uid })
-    res.render('payment', { user: user })
+    res.render('payment', {host:`${req.protocol}://${req.hostname}`, user: user })
 })
 
-app.post('/payment/chechout', async (req, res) => {
-    try {
-        stripe.prices.create({
-            unit_amount: req.body.price, // O valor do preço em centavos (por exemplo, R$10,00 seria 1000 centavos)
-            currency: 'brl', // A moeda do preço (BRL para Real Brasileiro)
-            product_data: {
-                name: 'Assinatura', // O nome do produto associado ao preço
-            },
-            recurring: {
-                interval: 'month', // A frequência da recorrência (por exemplo, 'month' para mensal)
-              },
-        }).then( async price => {
-            const session = await stripe.checkout.sessions.create({
-                payment_method_types: ['card'],
-                line_items: [{
-                    price: price.id,
-                    quantity: 1,
-                }],
-                mode: 'subscription', // Ou 'payment' se for uma única transação
-                success_url: 'http://localhost/dashboard',
-                cancel_url: 'http://localhost/dashboard',
-                metadata: {
-                    plan:req.body.plan,
-                    serverID:req.body.serverID,
-                    uid:req.body.uid
-                }
-            });
-    
-            res.redirect(session.url)
-        }).catch(error => {
-            console.error('Erro ao criar o preço:', error);
-        });
 
-    } catch (error) {
-        console.error('Erro ao iniciar o checkout:', error);
-        res.status(500).send('Erro ao iniciar o checkout.');
+app.get('/server/:id', async (req, res) => {
+    if (!req.params.id || !req.session.uid) {
+        res.redirect('/')
+        return
     }
+    let serverID = req.params.id
+    let user = await db.findOne({ colecao: 'users', doc: req.session.uid })
+    let server = await db.findOne(({colecao:'servers',doc:serverID}))
+    if (server.dadosBancarios) {
+        delete server.dadosBancarios
+    }
+    if (server.assinante == false || server.isPaymented == false) {
+        res.redirect('/dashboard')
+        return
+    }
+
+    res.render('painel', {host:`${req.protocol}://${req.hostname}`, user: user, server: server })
 })
 
-app.post('/webhook/stripe/payment', (req, res) => {
-    console.log(req.body);
-    res.status(200).end();
+
+
+
+
+app.get('/server/sales/:id', async (req, res) => {
+    if (!req.params.id || !req.session.uid) {
+        res.redirect('/')
+        return
+    }
+    let serverID = req.params.id
+    let user = await db.findOne({ colecao: 'users', doc: req.session.uid })
+    let server = await db.findOne(({colecao:'servers',doc:serverID}))
+    if (server.assinante == false || server.isPaymented == false) {
+        res.redirect('/dashboard')
+        return
+    }
+
+    res.render('sales', {host:`${req.protocol}://${req.hostname}`, user: user, server: server })
 })
+
+
+
+app.post('/product/create',(req,res)=>{
+
+})
+
+
+
+
+// host:`${req.protocol}://${req.hostname}`,
+
+
+
+
+
+
+
+
+
+//TODO STRIPE ROUTES
+
+const stripeRoutes = require('./stripe/stripeRoutes.js');
+
+app.use('/', stripeRoutes);
+
+
+
+
+
+
+
+
 
 
 
 app.use((req, res, next) => {
     res.status(404).render('NotFoundPage.ejs')
 });
-
 
 //TODO------------Listen--------------
 

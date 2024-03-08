@@ -1,71 +1,42 @@
 
 const serverID = location.pathname.replace('/payment/', "")
 
-
-document.getElementById('plan-1').addEventListener('click', async () => {
-    const response = await fetch('/payment/chechout', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            price:999,
+async function initCheckout(plan,price) {
+    await $.ajax({
+        traditional: true,
+        url: '/subscription/create',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify( {
+            price:price,
             serverID:serverID,
             uid:uid,
-            plan:1
-        })
-    });
+            plan:plan,
+            host:location.origin
+        } ),
+        dataType: 'json',
+        success: function(response) {
+            console.log(response);
+            if (response.success == true) {
+                window.location.href = response.url;
+            }   
+        },
+        error: function(xhr, status, error) {
+            console.error(error);
+        }
+    })
+}
 
-    if (response.ok) {
-        const { url } = await response.json();
-        window.location.href = url;
-    } else {
-        console.error('Erro ao iniciar o checkout');
-    }
+document.getElementById('plan-1').addEventListener('click', async () => {
+    initCheckout(1,999)
 });
 
 
 document.getElementById('plan-2').addEventListener('click', async () => {
-    const response = await fetch('/payment/chechout', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            price:1499,
-            serverID:serverID,
-            uid:uid,
-            plan:2
-        })
-    });
-
-    if (response.ok) {
-        const { url } = await response.json();
-        window.location.href = url;
-    } else {
-        console.error('Erro ao iniciar o checkout');
-    }
+    initCheckout(2,1499)
 });
 
 
 document.getElementById('plan-3').addEventListener('click', async () => {
-    const response = await fetch('/payment/chechout', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            price:1999,
-            serverID:serverID,
-            uid:uid,
-            plan:3
-        })
-    });
-
-    if (response.ok) {
-        const { url } = await response.json();
-        window.location.href = url;
-    } else {
-        console.error('Erro ao iniciar o checkout');
-    }
+    initCheckout(3,1999)
 });

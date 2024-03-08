@@ -1,0 +1,8 @@
+quando for trocar as contas da stripe se lembrar de cadastrar e colocar os codigos do produtos da assinatura novamente
+e de trocar os tokens alem de cadastrar os produtos os precos e alterar via codigo os ids dos precos alem de comprimir as imagem e colocar 1 como fundo do produto
+
+
+fazer sitema para quando o usuario estiver na tela inicial e tiver logado apenas redirecionar para o dashboard ao inves de logar dnv
+
+
+

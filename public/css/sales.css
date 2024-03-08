@@ -1,0 +1,187 @@
+#main-containner{
+    width: calc(100% - 18em);
+    position: relative;
+    top: 5em;
+    left: 18em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1em;
+    
+}
+#main-content{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5em;
+    margin-top: 5em;
+}
+#pagamentos-containner,#produtos-containner {
+    width: 40%;
+    height: 45em;
+    padding: 1em;
+    display: flex;
+    flex-direction: column;
+    border-radius: var(--border-radius-min);
+    background-color: var(--secundary-color);
+}
+#pagamentos-produtos-containner{
+    width: 90%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+
+}
+.title-col{
+    margin-bottom: 0.5em;
+    width: 100%;
+    text-align: center;
+    font-size: 1.8em;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    font-family: 'poppins';
+}
+
+.desc-col{
+    width: 100%;
+    text-align: center;
+    font-size: 0.8em;
+    font-weight: 300;
+    color: var(--color-text-primary);
+    font-family: 'poppins';
+}
+#pagamentos-content{
+    padding: 1.5em;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5em;
+    height: 100%;
+    width: 100%;
+    .inputs-containner{
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+        width: 90%;
+        .lable-payment{
+            padding-left: 0.2em;
+            font-size: 0.8em;
+            font-weight: 400;
+            color: var(--color-text-primary);
+            font-family: 'poppins';
+        }
+        .full-input-payment{
+            font-size: 1.2em;
+            padding: 0.5em;
+            width: 100%;
+            height: 3em;
+            background-color: var(--text-gray-color-primary);
+            color: var(--primary-color);
+            border: none;
+            border-radius: var(--border-radius-min);
+            font-family: 'poppins';
+        }
+    }
+}
+
+#last-input-containner{
+    display: flex;
+    width: 90%;
+    justify-content: space-between;
+    gap: 1em;
+    #terms-check-content{
+        width: 50%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
+        
+    }
+    #terms-check-content label{
+        font-size: 0.7em;
+        font-weight: 400;
+        color: var(--color-text-primary);
+        font-family: 'poppins';
+    }
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+    }
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: var(--tertiary-color);
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 26px;
+        width: 26px;
+        left: 4px;
+        bottom: 4px;
+        background-color: var(--white-color);
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+    #checkbox:checked + .slider {
+        background-color: var(--main-color-purple);
+    }
+    #checkbox:focus + .slider {
+        box-shadow: 0 0 1px var(--main-color-purple);
+    }
+    #checkbox:checked + .slider:before {
+        -webkit-transform: translateX(26px);
+        -ms-transform: translateX(26px);
+        transform: translateX(26px);
+    }
+    .slider.round {
+        border-radius: 34px;
+    }
+    .slider.round:before {
+        border-radius: 50%;
+    }
+}
+
+
+#save-button-content{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1em;
+    #save-button{
+        font-size: 1.2em;
+        font-weight: 400;
+        color: var(--color-text-primary);
+        font-family: 'poppins';
+        border: none;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 45%;
+        height: 3.5em;
+        border-radius: var(--border-radius-min);
+        background-color: var(--secundary-color-purple);
+        transition: 0.7s;
+        cursor: pointer;
+        &:hover{
+            opacity: 0.8;
+            transition: 0.7s;
+        }
+    }
+}
